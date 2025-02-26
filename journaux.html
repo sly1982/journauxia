@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Code Secret - IA et Gamification</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            background: black;
+            color: white;
+            font-family: Arial, sans-serif;
+            text-align: center;
+        }
+        canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+        .container {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0, 0, 0, 0.7);
+            padding: 20px;
+            border-radius: 10px;
+        }
+        .code-buttons button {
+            font-size: 20px;
+            margin: 5px;
+            padding: 10px;
+            cursor: pointer;
+        }
+        #message {
+            margin-top: 10px;
+            font-size: 20px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="matrix"></canvas>
+    <div class="container">
+        <h1>Bienvenue à la formation à l'IA par la Gamification</h1>
+        <h2>Insérez le code secret</h2>
+        <div class="code-buttons">
+            <button onclick="enterCode(1)">1</button>
+            <button onclick="enterCode(2)">2</button>
+            <button onclick="enterCode(3)">3</button>
+            <button onclick="enterCode(4)">4</button>
+            <button onclick="enterCode(5)">5</button>
+            <button onclick="enterCode(6)">6</button>
+            <button onclick="enterCode(7)">7</button>
+            <button onclick="enterCode(8)">8</button>
+            <button onclick="enterCode(9)">9</button>
+        </div>
+        <p id="code-input"></p>
+        <p id="message"></p>
+    </div>
+    
+    <script>
+        const canvas = document.getElementById("matrix");
+        const ctx = canvas.getContext("2d");
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789".split("");
+        const fontSize = 16;
+        const columns = Math.floor(canvas.width / fontSize);
+        const drops = Array(columns).fill(1);
+
+        function drawMatrix() {
+            ctx.fillStyle = "rgba(0, 0, 0, 0.05)";
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = "#0F0";
+            ctx.font = fontSize + "px monospace";
+            
+            for (let i = 0; i < drops.length; i++) {
+                const text = letters[Math.floor(Math.random() * letters.length)];
+                ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+                if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) drops[i] = 0;
+                drops[i]++;
+            }
+        }
+        setInterval(drawMatrix, 50);
+
+        let codeInput = "";
+        const correctCode = "526";
+
+        function enterCode(num) {
+            if (codeInput.length < 3) {
+                codeInput += num;
+                document.getElementById("code-input").textContent = codeInput;
+            }
+            if (codeInput.length === 3) {
+                if (codeInput === correctCode) {
+                    document.getElementById("message").textContent = "CORRECT";
+                    document.getElementById("message").style.color = "limegreen";
+                } else {
+                    document.getElementById("message").textContent = "INCORRECT";
+                    document.getElementById("message").style.color = "red";
+                }
+                setTimeout(() => {
+                    codeInput = "";
+                    document.getElementById("code-input").textContent = "";
+                    document.getElementById("message").textContent = "";
+                }, 2000);
+            }
+        }
+    </script>
+</body>
+</html>
